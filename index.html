@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quizy — Next-Gen Interactive Online Quiz Platform</title>
+  <meta name="description" content="Challenge your intellect with Quizy: an ultra-sleek, interactive online quiz platform featuring sliding 3D question cards, sound FX, streak multipliers, rich trivia, and live leaderboards.">
+  <meta name="keywords" content="quiz, trivia, online quiz platform, science quiz, tech quiz, cinema trivia, interactive learning">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="main-navbar">
+    <div class="container nav-inner">
+      <a href="#" class="brand-logo" id="nav-brand-home" aria-label="Quizy Home">
+        <div class="logo-badge">⚡</div>
+        <div class="brand-name">
+          <span class="brand-title">QUIZ</span><span class="brand-dot">Y</span>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <!-- Streak counter pill -->
+        <div class="streak-pill" id="global-streak-badge" title="Current Daily Streak">
+          <span>🔥</span> <span id="global-streak-val">3 Day Streak</span>
+        </div>
+
+        <!-- Sound FX Toggle -->
+        <button class="icon-btn" id="btn-sound-toggle" title="Toggle Sound FX" aria-label="Toggle Sound FX">
+          <span id="sound-icon">🔊</span>
+        </button>
+
+        <!-- Dark/Light Theme Toggle -->
+        <button class="icon-btn" id="btn-theme-toggle" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+          <span id="theme-icon">🌙</span>
+        </button>
+
+        <!-- Leaderboard Drawer Trigger -->
+        <button class="nav-btn" id="btn-open-leaderboard" aria-label="View Leaderboard">
+          <span>🏆</span> <span>Ranks</span>
+        </button>
+
+        <!-- Custom Quiz Creator Button -->
+        <button class="nav-btn primary" id="btn-open-creator" aria-label="Create Custom Quiz">
+          <span>➕</span> <span>Create Quiz</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main id="app-viewport">
+    
+    <!-- HOME SCREEN -->
+    <section id="home-screen">
+      <div class="container">
+        
+        <!-- FEATURED SLIDING CAROUSEL -->
+        <section class="hero-slider-section" aria-label="Featured Quizzes Carousel">
+          <div class="slider-container" id="hero-slider">
+            <div class="slider-track" id="slider-track">
+              <!-- Dynamically populated by app.js -->
+            </div>
+
+            <!-- Slide Navigation Controls -->
+            <div class="slider-controls">
+              <button class="slider-nav-btn" id="slider-btn-prev" aria-label="Previous Slide">‹</button>
+              <button class="slider-nav-btn" id="slider-btn-next" aria-label="Next Slide">›</button>
+            </div>
+
+            <!-- Dot indicators -->
+            <div class="slider-dots" id="slider-dots-container"></div>
+          </div>
+        </section>
+
+        <!-- FILTER & DIFFICULTY BAR -->
+        <section class="filter-bar" aria-label="Quiz Filter Controls">
+          <div class="filter-group">
+            <span class="filter-label">Mode:</span>
+            <div class="pill-selector" id="difficulty-selector">
+              <button class="pill-option active" data-difficulty="all">All</button>
+              <button class="pill-option" data-difficulty="casual">Casual (Relaxed)</button>
+              <button class="pill-option" data-difficulty="standard">Standard (30s)</button>
+              <button class="pill-option" data-difficulty="blitz">⚡ Blitz (15s)</button>
+            </div>
+          </div>
+
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="category-search-input" class="search-input" placeholder="Search topics or categories..." aria-label="Search quizzes">
+          </div>
+        </section>
+
+        <!-- CATEGORIES GRID -->
+        <section class="categories-section" aria-label="Quiz Categories">
+          <div class="section-header">
+            <div>
+              <p class="section-tag">Explore Realms</p>
+              <h1 class="section-title">Select Your Quiz Arena</h1>
+            </div>
+          </div>
+
+          <div class="category-grid" id="category-grid">
+            <!-- Dynamically populated from QUIZ_CATEGORIES in js/quiz-data.js -->
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+    <!-- QUIZ ACTIVE GAMEPLAY SCREEN -->
+    <section id="quiz-screen" aria-label="Active Quiz">
+      <div class="container quiz-wrapper">
+        
+        <!-- HUD Header -->
+        <div class="quiz-hud">
+          <div class="hud-info">
+            <button class="icon-btn" id="btn-quit-quiz" title="Leave Quiz" aria-label="Leave Quiz">
+              <span>✕</span>
+            </button>
+            <span class="quiz-category-tag" id="hud-category-tag">Space & Cosmos</span>
+            <span class="question-counter" id="hud-question-counter">Question 1 / 6</span>
+          </div>
+
+          <div class="hud-stats">
+            <div class="hud-score">
+              <span>⭐</span> <span id="hud-score-val">0 PTS</span>
+            </div>
+            
+            <!-- Circular Countdown Timer -->
+            <div class="timer-widget" id="quiz-timer-widget">
+              <svg class="timer-svg" viewBox="0 0 48 48">
+                <circle class="timer-circle-bg" cx="24" cy="24" r="20"></circle>
+                <circle class="timer-circle-progress" id="timer-progress-ring" cx="24" cy="24" r="20"></circle>
+              </svg>
+              <div class="timer-text" id="timer-display-text">30</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar Rail -->
+        <div class="progress-rail" aria-hidden="true">
+          <div class="progress-fill" id="quiz-progress-bar"></div>
+        </div>
+
+        <!-- Lifelines Ribbon -->
+        <div class="lifelines-bar">
+          <button class="lifeline-btn" id="btn-lifeline-5050" title="Eliminate 2 wrong answers">
+            <span>✂️</span> <span>50:50</span>
+          </button>
+          <button class="lifeline-btn" id="btn-lifeline-hint" title="Reveal tactical trivia hint">
+            <span>💡</span> <span>Hint</span>
+          </button>
+          <button class="lifeline-btn" id="btn-lifeline-freeze" title="Add 15 extra seconds">
+            <span>⏳</span> <span>Freeze (+15s)</span>
+          </button>
+        </div>
+
+        <!-- Question Viewport with Sliding 3D Transitions -->
+        <div class="question-viewport" id="question-viewport">
+          <div class="question-card" id="active-question-card">
+            
+            <!-- Question Photo / Banner -->
+            <div class="question-photo-wrap" id="question-photo-container">
+              <img src="" alt="Quiz Visual" class="question-photo" id="question-photo-img" loading="lazy">
+            </div>
+
+            <!-- Question Headline -->
+            <h2 class="question-title" id="question-text">
+              Loading question...
+            </h2>
+
+            <!-- Options Grid -->
+            <div class="options-list" id="options-container">
+              <!-- Dynamically populated option buttons -->
+            </div>
+
+            <!-- Hint Box (Revealed upon lifeline) -->
+            <div class="hint-box" id="question-hint-box">
+              <strong>💡 Tactical Hint:</strong> <span id="hint-text-content"></span>
+            </div>
+
+            <!-- Explanation & Trivia Drawer (Slides down after answering) -->
+            <div class="explanation-panel" id="question-explanation-panel">
+              <div class="explanation-header">
+                <span>📘</span> <span>Deep Dive & Trivia</span>
+              </div>
+              <div class="explanation-body" id="explanation-text-content">
+                Detailed answer breakdown goes here.
+              </div>
+            </div>
+
+            <!-- Action Controls (Next question) -->
+            <div class="quiz-actions">
+              <button class="nav-btn primary" id="btn-next-question" style="display: none;">
+                <span>Next Question</span> <span>→</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RESULTS & SCORING DASHBOARD -->
+    <section id="results-screen" aria-label="Quiz Results">
+      <div class="container">
+        <div class="results-card">
+          <div class="result-badge-pill" id="result-badge-pill">
+            <span>🏆</span> <span id="result-arena-name">Space & Cosmos Mastery</span>
+          </div>
+
+          <h1 class="result-title" id="result-title-headline">Outstanding Prodigy!</h1>
+          <p class="result-subtitle" id="result-subtitle-desc">You navigated celestial hazards and dominated the leaderboard.</p>
+
+          <!-- SVG Circular Score Gauge -->
+          <div class="score-gauge-wrap">
+            <svg class="gauge-svg" viewBox="0 0 160 160">
+              <defs>
+                <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#6366f1" />
+                  <stop offset="50%" stop-color="#06b6d4" />
+                  <stop offset="100%" stop-color="#10b981" />
+                </linearGradient>
+              </defs>
+              <circle class="gauge-circle-bg" cx="80" cy="80" r="70"></circle>
+              <circle class="gauge-circle-val" id="gauge-circle-fill" cx="80" cy="80" r="70"></circle>
+            </svg>
+            <div class="score-center-text">
+              <span class="score-num" id="result-percentage-display">0%</span>
+              <span class="score-label">Accuracy</span>
+            </div>
+          </div>
+
+          <!-- Statistics Breakdown Grid -->
+          <div class="stats-breakdown-grid">
+            <div class="stat-tile">
+              <span class="stat-icon">⭐</span>
+              <span class="stat-val" id="stat-total-score">0</span>
+              <span class="stat-desc">Total Points</span>
+            </div>
+            <div class="stat-tile">
+              <span class="stat-icon">🎯</span>
+              <span class="stat-val" id="stat-correct-count">0 / 6</span>
+              <span class="stat-desc">Correct Answers</span>
+            </div>
+            <div class="stat-tile">
+              <span class="stat-icon">⏱️</span>
+              <span class="stat-val" id="stat-time-spent">00:00</span>
+              <span class="stat-desc">Time Taken</span>
+            </div>
+            <div class="stat-tile">
+              <span class="stat-icon">🔥</span>
+              <span class="stat-val" id="stat-max-streak">0x</span>
+              <span class="stat-desc">Highest Streak</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="results-actions">
+            <button class="nav-btn primary" id="btn-retake-quiz">
+              <span>🔄</span> <span>Retake Quiz</span>
+            </button>
+            <button class="nav-btn" id="btn-download-cert">
+              <span>📜</span> <span>Download Certificate</span>
+            </button>
+            <button class="nav-btn" id="btn-back-home">
+              <span>🏠</span> <span>Explore More Quizzes</span>
+            </button>
+          </div>
+
+          <!-- SLIDING QUESTION REVIEW SECTION -->
+          <div class="review-section">
+            <div class="review-header">
+              <h3>🔍 Question-by-Question Breakdown</h3>
+              <span id="review-slide-counter" style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-secondary);">1 of 6</span>
+            </div>
+
+            <div class="review-slider-wrap">
+              <div class="review-card-container" id="review-card-container">
+                <!-- Dynamically rendered review card -->
+              </div>
+
+              <!-- Sliding controls for reviewing questions -->
+              <div class="review-nav-bar">
+                <button class="nav-btn" id="btn-review-prev">
+                  <span>←</span> <span>Previous</span>
+                </button>
+                <button class="nav-btn" id="btn-review-next">
+                  <span>Next</span> <span>→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SLIDE-OVER LEADERBOARD DRAWER -->
+  <div class="drawer-backdrop" id="leaderboard-backdrop">
+    <aside class="leaderboard-drawer" id="leaderboard-drawer" aria-label="Leaderboard Side Panel">
+      <div class="drawer-header">
+        <h2 class="drawer-title">
+          <span>🏆</span> <span>Hall of Champions</span>
+        </h2>
+        <button class="icon-btn" id="btn-close-leaderboard" aria-label="Close Leaderboard">✕</button>
+      </div>
+
+      <div class="drawer-content">
+        <div class="leaderboard-list" id="leaderboard-list-items">
+          <!-- Populated by app.js from INITIAL_LEADERBOARD / localStorage -->
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- CUSTOM QUIZ CREATOR MODAL -->
+  <div class="modal-backdrop" id="creator-modal-backdrop">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="creator-modal-title">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+        <h2 class="modal-title" id="creator-modal-title">Create Custom Quiz</h2>
+        <button class="icon-btn" id="btn-close-creator" aria-label="Close Creator Modal">✕</button>
+      </div>
+      <p class="modal-subtitle">Craft your own trivia arena and test your friends or community!</p>
+
+      <form id="quiz-creator-form">
+        <div class="form-group">
+          <label class="form-label" for="custom-category-title">Quiz Title</label>
+          <input type="text" id="custom-category-title" class="form-input" placeholder="e.g. Vintage Anime & Manga Classics" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="custom-category-desc">Description</label>
+          <textarea id="custom-category-desc" class="form-textarea" rows="2" placeholder="Brief summary of what this quiz covers..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="custom-category-icon">Icon Emoji</label>
+          <input type="text" id="custom-category-icon" class="form-input" placeholder="e.g. 🦊, ⚡, 🚀, 💎" maxlength="4" value="✨">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="custom-category-image">Cover Image URL (Optional)</label>
+          <input type="url" id="custom-category-image" class="form-input" placeholder="https://images.unsplash.com/photo-...">
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 1.5rem 0;">
+
+        <h3 style="font-size: 1.15rem; margin-bottom: 1rem;">Add Question #1</h3>
+
+        <div class="form-group">
+          <label class="form-label" for="custom-q-text">Question</label>
+          <input type="text" id="custom-q-text" class="form-input" placeholder="What is the name of..." required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Options (Check the radio for the correct answer)</label>
+          <div style="display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.4rem;">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <input type="radio" name="custom-correct-ans" value="0" checked id="radio-opt-0">
+              <input type="text" id="custom-opt-0" class="form-input" placeholder="Option A" required>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <input type="radio" name="custom-correct-ans" value="1" id="radio-opt-1">
+              <input type="text" id="custom-opt-1" class="form-input" placeholder="Option B" required>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <input type="radio" name="custom-correct-ans" value="2" id="radio-opt-2">
+              <input type="text" id="custom-opt-2" class="form-input" placeholder="Option C" required>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <input type="radio" name="custom-correct-ans" value="3" id="radio-opt-3">
+              <input type="text" id="custom-opt-3" class="form-input" placeholder="Option D" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="custom-q-explanation">Trivia Explanation (Optional)</label>
+          <textarea id="custom-q-explanation" class="form-textarea" rows="2" placeholder="Why this is the correct answer and interesting trivia..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+          <button type="button" class="nav-btn" id="btn-cancel-creator">Cancel</button>
+          <button type="submit" class="nav-btn primary">Save & Launch Quiz</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Hidden Canvas for Certificate Generation -->
+  <canvas id="certificate-canvas" width="1200" height="800" style="display: none;"></canvas>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="brand-title">QUIZ</span><span class="brand-dot">Y</span>
+        <div class="footer-text">The Next-Gen Interactive Online Quiz Platform</div>
+      </div>
+      <div class="footer-links">
+        <a href="#home-screen">Home</a>
+        <a href="#category-grid">Categories</a>
+        <a href="#" id="footer-leaderboard-link">Leaderboard</a>
+        <a href="#" id="footer-new-quiz-link">Create Quiz</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/quiz-data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/confetti.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

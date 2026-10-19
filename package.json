@@ -1,0 +1,16 @@
+{
+  "name": "quizy",
+  "version": "1.0.0",
+  "description": "Interactive Online Quiz Platform with unique CSS, 3D sliding transitions, sound effects, and scoring",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "quiz",
+    "trivia",
+    "web-app"
+  ],
+  "author": "",
+  "license": "ISC"
+}
