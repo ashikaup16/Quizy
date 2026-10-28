@@ -24,7 +24,21 @@
 
 ---
 
+## ☁️ Deploy as a live app on Vercel
+
+Quizy is a static HTML/CSS/JavaScript app, so Vercel can host it without a server or build step. The included `vercel.json` configures Vercel to serve the project root, where `index.html` and the app assets live. After pushing this project to GitHub:
+
+1. Sign in at [Vercel](https://vercel.com/) and choose **Add New → Project**.
+2. Import the `ashikaup16/Quizy` GitHub repository and authorize access if prompted.
+3. Keep the project **Root Directory** at the repository root. The Vercel configuration selects **Other**, requires no build command, and serves the project root.
+4. Choose **Deploy**. Vercel will provide a public URL for the live app.
+
+After setup, Vercel automatically updates the live deployment when you push changes to the production branch. You do not need to keep your computer or a terminal running.
+
 ## 🚀 Quickstart & Localhost Commands
+
+### 🖱️ Open without a terminal (Windows)
+If Node.js is installed, double-click **`Open Quizy.vbs`** in the project folder. It starts the local server in the background and opens Quizy in your default browser. If Quizy is already running, it just opens the existing page.
 
 ### 🔗 Localhost URL
 Once running, open your web browser and go to:
@@ -106,6 +120,7 @@ npx serve .
 Quizy/
 ├── index.html             # Semantic HTML5 layout with carousel, HUD & review drawers
 ├── server.js              # Lightweight zero-dependency Node static web server
+├── Open Quizy.vbs         # Windows one-click launcher (starts server hidden)
 ├── package.json           # Project manifest with npm start command
 ├── README.md              # Detailed documentation, commands, and previews
 ├── css/
