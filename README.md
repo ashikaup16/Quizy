@@ -26,6 +26,8 @@
 
 ## ☁️ Deploy as a live app on Vercel
 
+**Live app:** [https://quizy-tn5h.vercel.app](https://quizy-tn5h.vercel.app)
+
 Quizy is a static HTML/CSS/JavaScript app, so Vercel can host it without a server or build step. The included `vercel.json` configures Vercel to serve the project root, where `index.html` and the app assets live. After pushing this project to GitHub:
 
 1. Sign in at [Vercel](https://vercel.com/) and choose **Add New → Project**.
